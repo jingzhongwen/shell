@@ -1,10 +1,10 @@
 package com.jzw.shell;
 
+import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 
 /**
  * Created by jingzhongwen on 2017/12/16.
@@ -12,19 +12,33 @@ import org.apache.commons.cli.PosixParser;
 public class App {
     public static void main(String[] args) throws ParseException {
         // 创建 Options 对象
-        Options options = new Options();
+        Options opts = new Options();
 
         // 添加 -h 参数
-        options.addOption("h", false, "Lists short help");
+        opts.addOption("h", false, "Lists short help");
 
         // 添加 -t 参数
-        options.addOption("t", true, "Sets the HTTP communication protocol for CIM connection");
+        opts.addOption("t", true, "Sets the HTTP communication protocol for CIM connection");
 
-        CommandLineParser commandLineParser = new PosixParser();
-        final CommandLine cmd = commandLineParser.parse(options, args);
-        if (cmd.hasOption("t")) {
-            System.out.println("this is a simple help code.hello " + cmd.getOptionValue("t"));
+        BasicParser parser = new BasicParser();
+
+        CommandLine cl = null;
+        try {
+            cl = parser.parse(opts, args);
+            if (cl.getOptions().length > 0) {
+                if (cl.hasOption('h')) {
+                    HelpFormatter hf = new HelpFormatter();
+                    hf.printHelp("Options", opts);
+                } else {
+                    // do process
+                    System.out.println("hello");
+                }
+            } else {
+                HelpFormatter hf = new HelpFormatter();
+                hf.printHelp("Options", opts);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        System.out.println("hello");
     }
 }
