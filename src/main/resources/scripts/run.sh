@@ -8,4 +8,4 @@
 CLASSPATH=`find lib -name *.jar|xargs|sed "s/ /:/g"`  
 export CLASSPATH=".:$CLASSPATH"  
 
-java com.jzw.shell.App
+java com.jzw.shell.App $1

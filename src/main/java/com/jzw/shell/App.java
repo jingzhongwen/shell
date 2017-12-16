@@ -1,23 +1,34 @@
 package com.jzw.shell;
 
+import com.jzw.shell.conf.SpirngContextConfig;
+import com.jzw.shell.handler.Handler;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by jingzhongwen on 2017/12/16.
  */
 public class App {
+
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) throws ParseException {
-        // 创建 Options 对象
+
         Options opts = new Options();
 
-        // 添加 -h 参数
+
         opts.addOption("h", false, "Lists short help");
 
-        // 添加 -t 参数
+
         opts.addOption("t", true, "Sets the HTTP communication protocol for CIM connection");
 
         BasicParser parser = new BasicParser();
@@ -31,14 +42,18 @@ public class App {
                     hf.printHelp("Options", opts);
                 } else {
                     // do process
-                    System.out.println("hello");
+                    logger.info("start process");
+                    AnnotationConfigApplicationContext context =
+                            new AnnotationConfigApplicationContext(SpirngContextConfig.class);
+                    Handler handler = context.getBean("handler", Handler.class);
+                    handler.handle();
                 }
             } else {
                 HelpFormatter hf = new HelpFormatter();
                 hf.printHelp("Options", opts);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage(), ex);
         }
     }
 }
